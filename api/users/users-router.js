@@ -25,4 +25,10 @@ router.post(
     }
   }
 );
-router.post("/login", (req, res, next) => {});
+router.post("/login", mw.validateLogin, (req, res, next) => {
+  try {
+    res.json({ message: `Welcome to the page ${req.body.username}` });
+  } catch (error) {
+    next(error);
+  }
+});

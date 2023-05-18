@@ -4,7 +4,9 @@ function validatePayload(req, res, next) {
   try {
     let { username, password } = req.body;
     if (!username || !password) {
-      res.status(400).json({ message: "girilen alanları kontrol ediniz." });
+      res
+        .status(400)
+        .json({ message: "kullanıcı adı veya parola eksik veya hatalı." });
     } else {
       next();
     }
@@ -20,7 +22,7 @@ function validateUserNameIsUnique(req, res, next) {
       .getAllUsers()
       .find((user) => user.username === username);
     if (isExist) {
-      res.status(400).json({ message: "aynı kullancı adı mevcut" });
+      res.status(400).json({ message: "aynı kullancı adı mevcut." });
     } else {
       next();
     }
@@ -32,7 +34,14 @@ function validateUserNameIsUnique(req, res, next) {
 function validateLogin(req, res, next) {
   try {
     let { username, password } = req.body;
-    const isExist = username;
+    const isLogin = userModel
+      .getAllUsers()
+      .find((user) => user.name === username && user.password === password);
+    if (!isLogin) {
+      res.status(400).json({ message: "giriş bilgileriniz hatalı." });
+    } else {
+      next();
+    }
   } catch (error) {
     next(error);
   }
